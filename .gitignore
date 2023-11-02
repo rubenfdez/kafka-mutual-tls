@@ -4,3 +4,5 @@
 *.pem
 *.key
 *.srl
+*.p12
+creds*
