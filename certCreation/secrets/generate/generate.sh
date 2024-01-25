@@ -2,8 +2,14 @@
 
 # Definir las contraseñas para los certificados
 CA_PASSWORD="contraseña_ca"
+echo "$CA_PASSWORD" > ../client/creds_ca
+echo "$CA_PASSWORD" > ../server/creds_ca
+
 SERVER_PASSWORD="contraseña_servidor"
+echo "$SERVER_PASSWORD" > ../server/creds_server
+
 CLIENT_PASSWORD="contraseña_cliente"
+echo "$CLIENT_PASSWORD" > ../client/creds_client
 
 # Generar una clave privada para la CA
 openssl genpkey -algorithm RSA -out files/ca-key.pem
@@ -34,12 +40,12 @@ openssl pkcs12 -export -out files/kafka-server.p12 -inkey files/server-key.pem -
 openssl pkcs12 -export -out files/kafka-client.p12 -inkey files/client-key.pem -in files/client-cert.pem -certfile files/ca.pem -passin pass:$CLIENT_PASSWORD -passout pass:$CLIENT_PASSWORD
 openssl pkcs12 -export -out files/ca.p12 -inkey files/ca-key.pem -in files/ca.pem -passin pass:$CA_PASSWORD -passout pass:$CA_PASSWORD
 
-# Limpieza: eliminar archivos temporales
-rm -f files/server-csr.pem files/client-csr.pem files/ca.srl
-
 cp -R files/kafka-server.p12 ../server
 cp -R files/ca.p12 ../server
 cp -R files/ca.p12 ../client
 cp -R files/kafka-client.p12 ../client
+
+# Limpieza: eliminar archivos temporales
+rm -rf files/*
 
 echo "Certificados y claves generados con éxito."
